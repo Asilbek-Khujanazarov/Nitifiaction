@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "zZCNC1HTqg9laIrG2lOPRnmz7jiN0S32FnUn9HlTrYY=",
+  "Source": "PatientRecovery.NotificationService",
+  "BasePath": "_content/PatientRecovery.NotificationService",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

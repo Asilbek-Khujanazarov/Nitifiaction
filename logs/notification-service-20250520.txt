@@ -1,0 +1,103 @@
+2025-05-20 00:01:27.389 +05:00 [INF] Executed DbCommand (527ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+CREATE DATABASE [NotificationServiceDB];
+2025-05-20 00:01:27.747 +05:00 [INF] Executed DbCommand (311ms) [Parameters=[], CommandType='"Text"', CommandTimeout='60']
+IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [NotificationServiceDB] SET READ_COMMITTED_SNAPSHOT ON;
+END;
+2025-05-20 00:01:27.796 +05:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-20 00:01:27.929 +05:00 [INF] Executed DbCommand (29ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [__EFMigrationsHistory] (
+    [MigrationId] nvarchar(150) NOT NULL,
+    [ProductVersion] nvarchar(32) NOT NULL,
+    CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+);
+2025-05-20 00:01:27.935 +05:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-20 00:01:27.966 +05:00 [INF] Executed DbCommand (23ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-05-20 00:01:28.002 +05:00 [INF] Executed DbCommand (31ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-05-20 00:01:28.024 +05:00 [INF] Applying migration '20250519185908_InitialNotificationServiceMigration'.
+2025-05-20 00:01:28.102 +05:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Notifications] (
+    [Id] uniqueidentifier NOT NULL,
+    [Title] nvarchar(max) NOT NULL,
+    [Message] nvarchar(max) NOT NULL,
+    [Type] int NOT NULL,
+    [Priority] int NOT NULL,
+    [Status] int NOT NULL,
+    [RecipientId] nvarchar(450) NULL,
+    [RecipientRole] nvarchar(max) NULL,
+    [PatientId] uniqueidentifier NULL,
+    [CreatedAt] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
+    [SentAt] datetime2 NULL,
+    [ReadAt] datetime2 NULL,
+    [Source] nvarchar(max) NULL,
+    [ActionUrl] nvarchar(max) NULL,
+    [AdditionalData] nvarchar(500) NULL,
+    CONSTRAINT [PK_Notifications] PRIMARY KEY ([Id])
+);
+2025-05-20 00:01:28.112 +05:00 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE [Templates] (
+    [Id] uniqueidentifier NOT NULL,
+    [Name] nvarchar(100) NOT NULL,
+    [Title] nvarchar(200) NOT NULL,
+    [Body] nvarchar(max) NOT NULL,
+    [Type] int NOT NULL,
+    [IsActive] bit NOT NULL,
+    [CreatedAt] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
+    [UpdatedAt] datetime2 NULL,
+    [Parameters] nvarchar(500) NULL,
+    [Description] nvarchar(max) NULL,
+    CONSTRAINT [PK_Templates] PRIMARY KEY ([Id])
+);
+2025-05-20 00:01:28.271 +05:00 [INF] Executed DbCommand (155ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Body', N'CreatedAt', N'Description', N'IsActive', N'Name', N'Parameters', N'Title', N'Type', N'UpdatedAt') AND [object_id] = OBJECT_ID(N'[Templates]'))
+    SET IDENTITY_INSERT [Templates] ON;
+INSERT INTO [Templates] ([Id], [Body], [CreatedAt], [Description], [IsActive], [Name], [Parameters], [Title], [Type], [UpdatedAt])
+VALUES ('2ace8065-5ea3-4e60-bb0d-fe560cf8a769', CONCAT(CAST(N'Critical vital signs detected:' AS nvarchar(max)), nchar(10), N'{VitalSignsDetails}', nchar(10), N'Time: {Timestamp}', nchar(10), N'Action Required: {ActionRequired}'), '2025-05-19T18:59:05.1452605Z', N'Template for vital signs alerts', CAST(1 AS bit), N'VitalSignsAlert', N'PatientId,VitalSignsDetails,Timestamp,ActionRequired', N'Vital Signs Alert for Patient {PatientId}', 2, NULL),
+('5b15e491-1021-41ba-b446-a94097f38a12', CONCAT(CAST(N'Emergency situation reported for patient {PatientId}.' AS nvarchar(max)), nchar(10), N'Type: {AlertType}', nchar(10), N'Description: {Description}', nchar(10), N'Location: {Location}', nchar(10), N'Priority: {Priority}'), '2025-05-19T18:59:05.1452594Z', N'Template for emergency alerts', CAST(1 AS bit), N'EmergencyAlert', N'AlertType,PatientId,Description,Location,Priority', N'Emergency Alert: {AlertType}', 1, NULL);
+IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'Id', N'Body', N'CreatedAt', N'Description', N'IsActive', N'Name', N'Parameters', N'Title', N'Type', N'UpdatedAt') AND [object_id] = OBJECT_ID(N'[Templates]'))
+    SET IDENTITY_INSERT [Templates] OFF;
+2025-05-20 00:01:28.283 +05:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Notifications_CreatedAt] ON [Notifications] ([CreatedAt]);
+2025-05-20 00:01:28.290 +05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Notifications_Priority] ON [Notifications] ([Priority]);
+2025-05-20 00:01:28.298 +05:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Notifications_RecipientId] ON [Notifications] ([RecipientId]);
+2025-05-20 00:01:28.305 +05:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Notifications_Status] ON [Notifications] ([Status]);
+2025-05-20 00:01:28.312 +05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Notifications_Type] ON [Notifications] ([Type]);
+2025-05-20 00:01:28.368 +05:00 [INF] Executed DbCommand (54ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE UNIQUE INDEX [IX_Templates_Name] ON [Templates] ([Name]);
+2025-05-20 00:01:28.382 +05:00 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX [IX_Templates_Type] ON [Templates] ([Type]);
+2025-05-20 00:01:28.392 +05:00 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250519185908_InitialNotificationServiceMigration', N'8.0.2');
+2025-05-20 00:01:43.604 +05:00 [INF] Executed DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-20 00:01:43.686 +05:00 [INF] Executed DbCommand (21ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-05-20 00:01:43.698 +05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT 1
+2025-05-20 00:01:43.706 +05:00 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+2025-05-20 00:01:43.736 +05:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+2025-05-20 00:01:43.764 +05:00 [INF] No migrations were applied. The database is already up to date.
+2025-05-20 00:01:43.766 +05:00 [INF] Database migration completed successfully at "2025-05-19T19:01:43.7657813Z"
+2025-05-20 00:01:43.777 +05:00 [INF] Starting Notification Service at "2025-05-19T19:01:43.7778141Z"
+2025-05-20 00:01:43.944 +05:00 [INF] Starting Emergency Notification Consumer at "2025-05-19T19:01:43.9437673Z" by Asilbek-Khujanazarov
+2025-05-20 00:01:43.981 +05:00 [INF] Subscribed to queue emergency_notifications_queue at "2025-05-19T19:01:43.9809412Z"
+2025-05-20 00:01:44.018 +05:00 [INF] Now listening on: http://localhost:5136
+2025-05-20 00:01:44.022 +05:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-05-20 00:01:44.026 +05:00 [INF] Hosting environment: Development
+2025-05-20 00:01:44.029 +05:00 [INF] Content root path: F:\PatientRecoverySystem\PatientRecovery.NotificationService
