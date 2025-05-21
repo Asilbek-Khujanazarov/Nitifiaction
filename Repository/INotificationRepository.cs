@@ -2,26 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PatientRecovery.NotificationService.Models;
-using PatientRecovery.NotificationService.DTOs;
 
-namespace PatientRecovery.NotificationService.Services
+namespace PatientRecovery.NotificationService.Repository
 {
-    public interface INotificationService
+    public interface INotificationRepository
     {
-        Task<Notification> CreateNotificationAsync(CreateNotificationRequest request);
-        Task<Notification> GetNotificationByIdAsync(Guid id);
-        Task<IEnumerable<Notification>> GetNotificationsByRecipientAsync(
-            string recipientId,
-            NotificationStatus? status = null,
-            DateTime? fromDate = null,
-            int page = 1,
-            int pageSize = 10);
-        Task<bool> MarkAsReadAsync(Guid id);
-        Task<BulkNotificationResultDto> SendBulkNotificationsAsync(BulkNotificationRequest request);
-        Task<int> ProcessPendingNotificationsAsync();
-        Task<Notification> CreateFromTemplateAsync(
-            string templateName,
-            Dictionary<string, string> parameters,
-            string recipientId);
+        Task<Notification> CreateAsync(Notification notification);
+        Task<Notification> GetByIdAsync(Guid id);
+        Task<IEnumerable<Notification>> GetByRecipientIdAsync(string recipientId);
+        Task<Notification> UpdateAsync(Notification notification);
+        Task<bool> DeleteAsync(Guid id);
+        Task<IEnumerable<Notification>> GetUnreadNotificationsAsync(string recipientId);
+        Task<IEnumerable<Notification>> GetPendingNotificationsAsync();
     }
 }

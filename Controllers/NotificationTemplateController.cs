@@ -3,8 +3,10 @@ using PatientRecovery.NotificationService.Services;
 using PatientRecovery.NotificationService.Models;
 using PatientRecovery.NotificationService.DTOs;
 using AutoMapper;
+using System;
+using System.Threading.Tasks;
 
-namespace PatientRecoverySystem.NotificationService.Controllers
+namespace PatientRecovery.NotificationService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -36,16 +38,6 @@ namespace PatientRecoverySystem.NotificationService.Controllers
         public async Task<ActionResult<NotificationTemplateDto>> GetTemplate(Guid id)
         {
             var template = await _templateService.GetTemplateByIdAsync(id);
-            if (template == null)
-                return NotFound();
-
-            return Ok(_mapper.Map<NotificationTemplateDto>(template));
-        }
-
-        [HttpGet("name/{name}")]
-        public async Task<ActionResult<NotificationTemplateDto>> GetTemplateByName(string name)
-        {
-            var template = await _templateService.GetTemplateByNameAsync(name);
             if (template == null)
                 return NotFound();
 

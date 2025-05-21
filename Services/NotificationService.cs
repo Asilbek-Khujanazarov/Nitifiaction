@@ -63,7 +63,128 @@ namespace PatientRecovery.NotificationService.Services
             }
         }
 
-        // ... other methods implementation ...
+        public async Task<Notification> GetNotificationByIdAsync(Guid id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<Notification>> GetNotificationsByRecipientAsync(
+            string recipientId,
+            NotificationStatus? status = null,
+            DateTime? fromDate = null,
+            int page = 1,
+            int pageSize = 10)
+        {
+            var notifications = await _repository.GetByRecipientIdAsync(recipientId);
+
+            if (status.HasValue)
+                notifications = notifications.Where(n => n.Status == status.Value);
+
+            if (fromDate.HasValue)
+                notifications = notifications.Where(n => n.CreatedAt >= fromDate.Value);
+
+            return notifications
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize);
+        }
+
+        public async Task<bool> MarkAsReadAsync(Guid id)
+        {
+            var notification = await _repository.GetByIdAsync(id);
+            if (notification == null)
+                return false;
+
+            notification.IsRead = true;
+            notification.ReadAt = DateTime.UtcNow;
+            await _repository.UpdateAsync(notification);
+            return true;
+        }
+
+        public async Task<BulkNotificationResultDto> SendBulkNotificationsAsync(BulkNotificationRequest request)
+        {
+            var result = new BulkNotificationResultDto
+            {
+                TotalRecipients = request.RecipientIds.Count,
+                SuccessCount = 0,
+                FailureCount = 0,
+                FailedRecipientIds = new List<string>(),
+                ErrorMessages = new List<string>()
+            };
+
+            foreach (var recipientId in request.RecipientIds)
+            {
+                try
+                {
+                    var notificationRequest = new CreateNotificationRequest
+                    {
+                        Title = request.Title,
+                        Message = request.Message,
+                        RecipientId = recipientId,
+                        Type = request.Type,
+                        Priority = request.Priority
+                    };
+
+                    await CreateNotificationAsync(notificationRequest);
+                    result.SuccessCount++;
+                }
+                catch (Exception ex)
+                {
+                    result.FailureCount++;
+                    result.FailedRecipientIds.Add(recipientId);
+                    result.ErrorMessages.Add($"Error for recipient {recipientId}: {ex.Message}");
+                }
+            }
+
+            return result;
+        }
+
+        public async Task<int> ProcessPendingNotificationsAsync()
+        {
+            var pendingNotifications = await _repository.GetPendingNotificationsAsync();
+            var processedCount = 0;
+
+            foreach (var notification in pendingNotifications)
+            {
+                try
+                {
+                    await SendNotificationAsync(notification);
+                    processedCount++;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error processing notification {NotificationId}", notification.Id);
+                }
+            }
+
+            return processedCount;
+        }
+
+        public async Task<Notification> CreateFromTemplateAsync(
+            string templateName,
+            Dictionary<string, string> parameters,
+            string recipientId)
+        {
+            var template = await _templateService.GetTemplateByNameAsync(templateName);
+            if (template == null)
+                throw new ArgumentException($"Template {templateName} not found");
+
+            var message = template.Body;
+            foreach (var param in parameters)
+            {
+                message = message.Replace($"{{{param.Key}}}", param.Value);
+            }
+
+            var request = new CreateNotificationRequest
+            {
+                Title = template.Subject,
+                Message = message,
+                RecipientId = recipientId,
+                Type = template.Type,
+                Priority = NotificationPriority.High
+            };
+
+            return await CreateNotificationAsync(request);
+        }
 
         private async Task SendNotificationAsync(Notification notification)
         {
@@ -89,7 +210,5 @@ namespace PatientRecovery.NotificationService.Services
                 throw;
             }
         }
-
-        // ... implement other interface methods ...
     }
 }

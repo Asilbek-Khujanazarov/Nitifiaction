@@ -10,8 +10,10 @@ namespace PatientRecovery.NotificationService.Mapping
         {
             CreateMap<Notification, NotificationDto>();
             CreateMap<CreateNotificationRequest, Notification>();
+            
             CreateMap<NotificationTemplate, NotificationTemplateDto>();
             CreateMap<CreateNotificationTemplateRequest, NotificationTemplate>();
+            CreateMap<UpdateNotificationTemplateRequest, NotificationTemplate>();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace PatientRecovery.NotificationService.Services
         Task<Notification> CreateNotificationAsync(CreateNotificationRequest request);
         Task<Notification> GetNotificationByIdAsync(Guid id);
         Task<IEnumerable<Notification>> GetNotificationsByRecipientAsync(
-            string recipientId, 
+            string recipientId,
             NotificationStatus? status = null,
             DateTime? fromDate = null,
             int page = 1,
@@ -19,6 +19,9 @@ namespace PatientRecovery.NotificationService.Services
         Task<bool> MarkAsReadAsync(Guid id);
         Task<BulkNotificationResultDto> SendBulkNotificationsAsync(BulkNotificationRequest request);
         Task<int> ProcessPendingNotificationsAsync();
-        Task<Notification> CreateFromTemplateAsync(string templateName, Dictionary<string, string> parameters, string recipientId);
+        Task<Notification> CreateFromTemplateAsync(
+            string templateName,
+            Dictionary<string, string> parameters,
+            string recipientId);
     }
 }
