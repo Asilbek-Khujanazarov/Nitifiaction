@@ -18,7 +18,6 @@ F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Au
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Azure.Core.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Azure.Identity.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Humanizer.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Microsoft.CodeAnalysis.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -125,8 +124,6 @@ F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\ru
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Runtime.Caching.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\PatientRecovery.Shared.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\PatientRecovery.Shared.pdb
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\obj\Debug\net9.0\scopedcss\bundle\PatientRecovery.NotificationService.styles.css
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\obj\Debug\net9.0\staticwebassets.build.json
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\obj\Debug\net9.0\staticwebassets.development.json
@@ -144,20 +141,3 @@ F:\PatientRecoverySystem\PatientRecovery.NotificationService\obj\Debug\net9.0\Pa
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\obj\Debug\net9.0\PatientRecovery.NotificationService.genruntimeconfig.cache
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\obj\Debug\net9.0\ref\PatientRecovery.NotificationService.dll
 F:\PatientRecoverySystem\PatientRecovery.NotificationService\obj\Debug\net9.0\PatientRecovery.NotificationService.sourcelink.json
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Microsoft.Build.Locator.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\Microsoft.CodeAnalysis.Workspaces.MSBuild.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\System.ClientModel.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\cs\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\de\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\es\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\fr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\it\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\ja\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\ko\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\pl\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\pt-BR\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\ru\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\tr\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
-F:\PatientRecoverySystem\PatientRecovery.NotificationService\bin\Debug\net9.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll

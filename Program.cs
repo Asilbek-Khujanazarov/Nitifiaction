@@ -5,6 +5,7 @@ using PatientRecovery.NotificationService.Repository;
 using PatientRecovery.NotificationService.Configuration;
 using PatientRecoverySystem.NotificationService.BackgroundServices;
 using PatientRecovery.NotificationService.Messaging;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,10 @@ builder.Services.AddHostedService<EmergencyNotificationConsumer>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+// Globalization settings
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Configuration
 builder.Services.Configure<EmailSettings>(
