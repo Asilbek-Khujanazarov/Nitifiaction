@@ -1,23 +1,38 @@
 using Microsoft.EntityFrameworkCore;
-using PatientRecovery.NotificationService.Data;
-using PatientRecovery.NotificationService.Services;
-using PatientRecovery.NotificationService.Repository;
-using PatientRecovery.NotificationService.Configuration;
-using PatientRecoverySystem.NotificationService.BackgroundServices;
-using PatientRecovery.NotificationService.Messaging;
-using System.Globalization;
-using PatientRecovery.NotificationService.Hubs;
+using NotificationService.Data;
+using NotificationService.Services;
+using NotificationService.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add SignalR
-builder.Services.AddSignalR();
+// Add DbContext
+builder.Services.AddDbContext<ChatDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptionsAction: sqlOptions =>
+        {
+            sqlOptions.EnableRetryOnFailure(
+                maxRetryCount: 10,
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorNumbersToAdd: null);
+        }));
 
-// Configure CORS
+// Add Chat Service
+builder.Services.AddScoped<IChatService, ChatService>();
+
+// Add SignalR
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+});
+
+// Add CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ChatPolicy", builder =>
@@ -26,57 +41,44 @@ builder.Services.AddCors(options =>
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader()
-            .AllowCredentials();
+            .AllowCredentials()
+            .WithOrigins(
+                "http://localhost:3000", // React frontend
+                "http://localhost:4200"  // Angular frontend
+            );
     });
 });
 
-// Database
-builder.Services.AddDbContext<NotificationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// Messaging
-builder.Services.AddSingleton<IRabbitMQService>(sp => 
-    new RabbitMQService(builder.Configuration.GetValue<string>("RabbitMQ:Host") ?? "localhost"));
-// Background Services
-builder.Services.AddHostedService<NotificationProcessorService>();
-builder.Services.AddHostedService<EmergencyNotificationConsumer>();
-
-// AutoMapper
-builder.Services.AddAutoMapper(typeof(Program).Assembly);
-// Globalization settings
-var cultureInfo = new CultureInfo("en-US");
-CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
-// Configuration
-builder.Services.Configure<EmailSettings>(
-    builder.Configuration.GetSection("EmailSettings"));
-builder.Services.Configure<SmsSettings>(
-    builder.Configuration.GetSection("SmsSettings"));
-
-// Services
-builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<ISmsService, SmsService>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
-builder.Services.AddScoped<INotificationTemplateService, NotificationTemplateService>();
-builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
-builder.Services.AddScoped<IChatService, ChatService>();
-
 var app = builder.Build();
 
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Use CORS
 app.UseCors("ChatPolicy");
-
-// Map SignalR hub
-app.MapHub<ChatHub>("/chathub");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
 app.MapControllers();
+app.MapHub<ChatHub>("/chathub");
+
+// Auto migrate database
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ChatDbContext>();
+        db.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database");
+    }
+}
 
 app.Run();

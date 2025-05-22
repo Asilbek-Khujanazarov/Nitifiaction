@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PatientRecovery.NotificationService")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b927889025d89b29811bcf0eef454e7904b32fea")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de9fd1577f9e723882a6af93943473b7d4c79300")]
 [assembly: System.Reflection.AssemblyProductAttribute("PatientRecovery.NotificationService")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PatientRecovery.NotificationService")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -1,13 +1,11 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using PatientRecovery.NotificationService.Services;
-using PatientRecovery.NotificationService.DTOs;
+using NotificationService.Services;
+using NotificationService.DTOs;
 
-namespace PatientRecovery.NotificationService.Controllers
+namespace NotificationService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
@@ -19,37 +17,94 @@ namespace PatientRecovery.NotificationService.Controllers
             _logger = logger;
         }
 
-        [HttpGet("history/{otherUserId}")]
-        public async Task<ActionResult<IEnumerable<ChatMessageDto>>> GetChatHistory(string otherUserId)
+        [HttpGet("history/{userId1}/{userId2}")]
+        public async Task<ActionResult<IEnumerable<ChatMessageDto>>> GetChatHistory(
+            string userId1, 
+            string userId2,
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 50)
         {
-            var currentUserId = User.FindFirst("sub")?.Value;
-            if (string.IsNullOrEmpty(currentUserId))
+            try
             {
-                return Unauthorized();
+                var messages = await _chatService.GetChatHistoryAsync(userId1, userId2, skip, take);
+                return Ok(messages);
             }
-
-            var messages = await _chatService.GetChatHistoryAsync(currentUserId, otherUserId);
-            return Ok(messages);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting chat history");
+                return StatusCode(500, "An error occurred while getting chat history");
+            }
         }
 
-        [HttpGet("unread")]
-        public async Task<ActionResult<IEnumerable<ChatMessageDto>>> GetUnreadMessages()
+        [HttpGet("unread/{userId}")]
+        public async Task<ActionResult<IEnumerable<ChatMessageDto>>> GetUnreadMessages(string userId)
         {
-            var currentUserId = User.FindFirst("sub")?.Value;
-            if (string.IsNullOrEmpty(currentUserId))
+            try
             {
-                return Unauthorized();
+                var messages = await _chatService.GetUnreadMessagesAsync(userId);
+                return Ok(messages);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting unread messages");
+                return StatusCode(500, "An error occurred while getting unread messages");
+            }
+        }
 
-            var messages = await _chatService.GetUnreadMessagesAsync(currentUserId);
-            return Ok(messages);
+        [HttpGet("unread/count/{userId}")]
+        public async Task<ActionResult<int>> GetUnreadMessageCount(string userId)
+        {
+            try
+            {
+                var count = await _chatService.GetUnreadMessageCountAsync(userId);
+                return Ok(count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting unread message count");
+                return StatusCode(500, "An error occurred while getting unread message count");
+            }
         }
 
         [HttpPost("mark-as-read/{messageId}")]
         public async Task<IActionResult> MarkAsRead(Guid messageId)
         {
-            await _chatService.MarkMessageAsReadAsync(messageId);
-            return Ok();
+            try
+            {
+                await _chatService.MarkMessageAsReadAsync(messageId);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error marking message as read");
+                return StatusCode(500, "An error occurred while marking message as read");
+            }
+        }
+
+        [HttpDelete("{messageId}")]
+        public async Task<IActionResult> DeleteMessage(Guid messageId)
+        {
+            try
+            {
+                var userId = User.FindFirst("sub")?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized();
+                }
+
+                var result = await _chatService.DeleteMessageAsync(messageId, userId);
+                if (!result)
+                {
+                    return NotFound();
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting message");
+                return StatusCode(500, "An error occurred while deleting message");
+            }
         }
     }
 }

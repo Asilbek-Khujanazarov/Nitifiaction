@@ -1,15 +1,26 @@
-using System;
+using System.ComponentModel.DataAnnotations;
+using NotificationService.Enums;
 
-namespace PatientRecovery.NotificationService.Models
+namespace NotificationService.Models
 {
     public class ChatMessage
     {
         public Guid Id { get; set; }
+
+        [Required]
         public string SenderId { get; set; } = null!;
+
+        [Required]
         public string ReceiverId { get; set; } = null!;
+
+        [Required]
         public string Content { get; set; } = null!;
+
         public DateTime Timestamp { get; set; }
+
         public bool IsRead { get; set; }
-        public string SenderRole { get; set; } = null!; // "Doctor" yoki "Patient"
+
+        [Required]
+        public UserType SenderType { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 using AutoMapper;
-using PatientRecovery.NotificationService.Models;
-using PatientRecovery.NotificationService.DTOs;
+using NotificationService.Models;
+using NotificationService.DTOs;
 
 namespace PatientRecovery.NotificationService.Mapping
 {
@@ -8,12 +8,7 @@ namespace PatientRecovery.NotificationService.Mapping
     {
         public NotificationMappingProfile()
         {
-            CreateMap<Notification, NotificationDto>();
-            CreateMap<CreateNotificationRequest, Notification>();
-            
-            CreateMap<NotificationTemplate, NotificationTemplateDto>();
-            CreateMap<CreateNotificationTemplateRequest, NotificationTemplate>();
-            CreateMap<UpdateNotificationTemplateRequest, NotificationTemplate>();
+            CreateMap<ChatMessage, ChatMessageDto>().ReverseMap();
         }
     }
 }

@@ -1,4 +1,6 @@
-namespace PatientRecovery.NotificationService.DTOs
+using NotificationService.Enums;
+
+namespace NotificationService.DTOs
 {
     public class ChatMessageDto
     {
@@ -8,13 +10,14 @@ namespace PatientRecovery.NotificationService.DTOs
         public string Content { get; set; } = null!;
         public DateTime Timestamp { get; set; }
         public bool IsRead { get; set; }
-        public string SenderRole { get; set; } = null!;
-        public string SenderName { get; set; } = null!;
+        public UserType SenderType { get; set; }
+        public string? SenderName { get; set; }
     }
 
     public class SendMessageRequest
     {
         public string ReceiverId { get; set; } = null!;
         public string Content { get; set; } = null!;
+        public UserType SenderType { get; set; }
     }
 }
