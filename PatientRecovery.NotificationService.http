@@ -1,4 +1,4 @@
-@PatientRecovery.NotificationService_HostAddress = http://localhost:5136
+@PatientRecovery.NotificationService_HostAddress = http://localhost:5005
 
 GET {{PatientRecovery.NotificationService_HostAddress}}/weatherforecast/
 Accept: application/json

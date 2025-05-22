@@ -6,12 +6,29 @@ using PatientRecovery.NotificationService.Configuration;
 using PatientRecoverySystem.NotificationService.BackgroundServices;
 using PatientRecovery.NotificationService.Messaging;
 using System.Globalization;
+using PatientRecovery.NotificationService.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add SignalR
+builder.Services.AddSignalR();
+
+// Configure CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ChatPolicy", builder =>
+    {
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
 
 // Database
 builder.Services.AddDbContext<NotificationDbContext>(options =>
@@ -42,6 +59,7 @@ builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<INotificationTemplateService, NotificationTemplateService>();
 builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IChatService, ChatService>();
 
 var app = builder.Build();
 
@@ -50,6 +68,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Use CORS
+app.UseCors("ChatPolicy");
+
+// Map SignalR hub
+app.MapHub<ChatHub>("/chathub");
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
